@@ -161,8 +161,8 @@ def get_accounts():
 def get_transactions():
     global access_token
     try:
-        start_date = date(2021, 1, 1)
-        end_date = date(2022, 2, 1)
+        start_date = date(2022, 6, 1)
+        end_date = date(2023, 9, 1)
 
         # Define the transaction request
         transaction_request = TransactionsGetRequest(
@@ -172,12 +172,11 @@ def get_transactions():
         )
 
         # Call the Plaid API to get transactions
-        response = client.transactions_get(transaction_request)
+        response = client.transactions_get(transaction_request).to_dict()
 
         # Extract the transactions
         transactions = response['transactions']
 
-        # You can process or manipulate the transactions here as needed
 
         return jsonify({'data': transactions})
     except plaid.ApiException as e:
