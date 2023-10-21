@@ -87,7 +87,10 @@ def get_monthly_spending():
 @insights_bp.route("/api/insights/transactions/monthly", methods=["GET"])
 def get_all_monthly_transactions():
     date_str = request.args.get("date")
-    date = datetime.strptime(date_str, "%a, %d %b %Y %H:%M:%S %Z")
+    try:
+        date = datetime.fromisoformat(date_str)
+    except ValueError:
+        return jsonify({"error": "Invalid date format. Use ISO format (YYYY-MM-DD)"}, 400)
 
     start_date = date.replace(day=1)
     if start_date.month == 12:
@@ -97,4 +100,4 @@ def get_all_monthly_transactions():
 
     monthly_transactions = filter_transactions(transaction_data, start_date, end_date)
 
-    return monthly_transactions
+    return jsonify(monthly_transactions)

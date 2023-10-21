@@ -182,14 +182,17 @@ def get_accounts():
 def get_transactions():
     global access_token
     try:
-        start_date = date(2023, 6, 1)
-        end_date = date(2023, 9, 1)
+        start_date = date(2023, 1, 1)
+        end_date = date(2023, 10, 31)
 
         # Define the transaction request
         transaction_request = TransactionsGetRequest(
             access_token=access_token,
             start_date=start_date,
             end_date=end_date,
+            options={
+                "count": 500
+            }
         )
 
         # Call the Plaid API to get transactions
@@ -217,7 +220,7 @@ def get_transactions():
 def migrate_transaction_data():
     global access_token
     try:
-        start_date = date(2023, 6, 1)
+        start_date = date(2023, 2, 1)
         end_date = date(2023, 10, 30)
 
         # Define the transaction request
