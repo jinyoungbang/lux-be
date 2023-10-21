@@ -13,7 +13,10 @@ def create_app(config_name="development"):
 
     # Register blueprints
     from .routes.test import test_bp
+    from .routes.plaid import plaid_bp
+
     app.register_blueprint(test_bp)
+    app.register_blueprint(plaid_bp)
 
     # Other application setup and configuration
 
