@@ -8,6 +8,7 @@ flask = "*"
 python-dotenv = "*"
 plaid-python = "*"
 flask-cors = "*"
+pymongo = "==3.11"
 
 [dev-packages]
 
