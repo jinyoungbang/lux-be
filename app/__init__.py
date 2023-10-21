@@ -1,8 +1,12 @@
 from flask import Flask
+from flask_cors import CORS
 
 def create_app(config_name="development"):
     app = Flask(__name__)
     app.debug = True
+    CORS(app)
+    
+
 
     # Load configuration based on the provided config_name
     # app.config.from_object(f"config.{config_name}")

@@ -83,10 +83,7 @@ for product in PLAID_PRODUCTS:
 # We store the access_token in memory - in production, store it in a secure
 # persistent data store.
 access_token = None
-# The payment_id is only relevant for the UK Payment Initiation product.
-# We store the payment_id in memory - in production, store it in a secure
-# persistent data store.
-payment_id = None
+
 # The transfer_id is only relevant for Transfer ACH product.
 # We store the transfer_id in memory - in production, store it in a secure
 # persistent data store.
@@ -105,8 +102,6 @@ def create_link_token():
             client_user_id=str(time.time())
         )
     )
-
-    print(request)
     
     request['redirect_uri']=PLAID_REDIRECT_URI
     # create link token
@@ -126,6 +121,7 @@ def exchange_public_token():
     # associated with the currently signed-in user
     access_token = response['access_token']
     item_id = response['item_id']
+    print(access_token)
     return jsonify({'public_token_exchange': 'complete'})
 
 
