@@ -1,4 +1,8 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
+import json
+import datetime
+from datetime import date
+
 import os
 import time
 import plaid
@@ -46,6 +50,7 @@ from plaid.model.transfer_authorization_user_in_request import TransferAuthoriza
 from plaid.model.ach_class import ACHClass
 from plaid.model.transfer_create_idempotency_key import TransferCreateIdempotencyKey
 from plaid.model.transfer_user_address_in_request import TransferUserAddressInRequest
+from plaid.model.transactions_get_request import TransactionsGetRequest
 
 plaid_bp = Blueprint('plaid', __name__)
 
@@ -82,7 +87,7 @@ for product in PLAID_PRODUCTS:
 
 # We store the access_token in memory - in production, store it in a secure
 # persistent data store.
-access_token = None
+access_token = "access-sandbox-5adf8553-c2cf-4f50-8c71-64081370a218"
 
 # The transfer_id is only relevant for Transfer ACH product.
 # We store the transfer_id in memory - in production, store it in a secure
@@ -93,7 +98,7 @@ item_id = None
 
 @plaid_bp.route('/api/plaid/create_link_token', methods=['POST'])
 def create_link_token():
-    request = LinkTokenCreateRequest(
+    plaid_request = LinkTokenCreateRequest(
         products=products,
         client_name="Plaid Quickstart",
         country_codes=list(map(lambda x: CountryCode(x), PLAID_COUNTRY_CODES)),
@@ -103,20 +108,21 @@ def create_link_token():
         )
     )
     
-    request['redirect_uri']=PLAID_REDIRECT_URI
+    plaid_request['redirect_uri']=PLAID_REDIRECT_URI
     # create link token
-    response = client.link_token_create(request)
+    response = client.link_token_create(plaid_request)
     return jsonify(response.to_dict())
 
 
 @plaid_bp.route('/api/plaid/exchange_public_token', methods=['POST'])
 def exchange_public_token():
     global access_token
-    public_token = request.form['public_token']
-    request = ItemPublicTokenExchangeRequest(
+    data = request.get_json() 
+    public_token = data['public_token']
+    plaid_request = ItemPublicTokenExchangeRequest(
       public_token=public_token
     )
-    response = client.item_public_token_exchange(request)
+    response = client.item_public_token_exchange(plaid_request)
     # These values should be saved to a persistent database and
     # associated with the currently signed-in user
     access_token = response['access_token']
@@ -135,3 +141,52 @@ def info():
         'access_token': access_token,
         'products': PLAID_PRODUCTS
     })
+
+
+@plaid_bp.route('/api/plaid/accounts', methods=['GET'])
+def get_accounts():
+  try:
+      request = AccountsGetRequest(
+          access_token=access_token
+      )
+      accounts_response = client.accounts_get(request)
+  except plaid.ApiException as e:
+      response = json.loads(e.body)
+      return jsonify({'error': {'status_code': e.status, 'display_message':
+                      response['error_message'], 'error_code': response['error_code'], 'error_type': response['error_type']}})
+  return jsonify(accounts_response.to_dict())
+
+
+@plaid_bp.route("/api/plaid/transactions")
+def get_transactions():
+    global access_token
+    try:
+        start_date = date(2021, 1, 1)
+        end_date = date(2022, 2, 1)
+
+        # Define the transaction request
+        transaction_request = TransactionsGetRequest(
+            access_token=access_token,
+            start_date=start_date,
+            end_date=end_date,
+        )
+
+        # Call the Plaid API to get transactions
+        response = client.transactions_get(transaction_request)
+
+        # Extract the transactions
+        transactions = response['transactions']
+
+        # You can process or manipulate the transactions here as needed
+
+        return jsonify({'data': transactions})
+    except plaid.ApiException as e:
+        response = json.loads(e.body)
+        return jsonify({
+            'error': {
+                'status_code': e.status,
+                'display_message': response['error_message'],
+                'error_code': response['error_code'],
+                'error_type': response['error_type']
+            }
+        })
