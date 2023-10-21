@@ -22,7 +22,6 @@ def filter_transactions(transactions, start_date, end_date):
         if start_date <= transaction["date"] <= end_date
     ]
 
-
 @insights_bp.route("/api/insights/spending/monthly", methods=["GET"])
 def get_daily_spending():
     date_str = request.args.get("date")
@@ -101,3 +100,43 @@ def get_all_monthly_transactions():
     monthly_transactions = filter_transactions(transaction_data, start_date, end_date)
 
     return jsonify(monthly_transactions)
+
+@insights_bp.route("/api/insights/transactions/last-6-months", methods=["GET"])
+def get_last_6_monthly_spending():
+    date_str = request.args.get("date")
+    
+    try:
+        date = datetime.fromisoformat(date_str)
+    except ValueError:
+        return jsonify({"error": "Invalid date format. Use ISO format (YYYY-MM-DD)"}, 400)
+
+    # Initialize a list to store the aggregated spending for the last 6 months
+    aggregated_data = []
+
+    date = date.replace(month=date.month+1)
+
+    for _ in range(6):
+        end_date = date.replace(day=1)
+        
+        if end_date.month == 1:
+            start_date = end_date.replace(year=end_date.year - 1, month=12)
+        else:
+            start_date = end_date.replace(month=end_date.month - 1)
+
+        monthly_transactions = filter_transactions(transaction_data, start_date, end_date)
+
+        total_spending = sum(transaction["amount"] for transaction in monthly_transactions)
+
+        aggregated_data.append({
+            "start_date": start_date.strftime("%Y-%m-%d"),
+            "end_date": end_date.strftime("%Y-%m-%d"),
+            "total_spending": total_spending,
+        })
+
+        # Update the date to the previous month
+        date = start_date
+
+    # Reverse the list to have the data in chronological order
+    aggregated_data.reverse()
+
+    return jsonify(aggregated_data)
