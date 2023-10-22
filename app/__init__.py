@@ -19,10 +19,12 @@ def create_app(config_name="development"):
     from .routes.test import test_bp
     from .routes.plaid import plaid_bp
     from .routes.insights import insights_bp
+    from .routes.prod import prod_bp
 
     app.register_blueprint(test_bp)
     app.register_blueprint(plaid_bp)
     app.register_blueprint(insights_bp)
+    app.register_blueprint(prod_bp)
 
     # Other application setup and configuration
 

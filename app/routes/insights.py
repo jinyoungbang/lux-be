@@ -5,7 +5,7 @@ from datetime import timedelta
 
 insights_bp = Blueprint("insights", __name__)
 
-with open("data.json", "r") as file:
+with open("output.json", "r") as file:
     data = json.load(file)
 
 transaction_data = data["data"]

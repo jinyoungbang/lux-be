@@ -3,7 +3,7 @@
       {
         "account_id": "GAGDjMVbxGUkXLN8AX4jINdeWvP7QyF69yL5E",
         "account_owner": null,
-        "amount": 500.0,
+        "amount": 350.0,
         "authorized_date": null,
         "authorized_datetime": null,
         "category": [
@@ -67,7 +67,7 @@
       {
         "account_id": "EbzDaQLRBzhZbDKL6b1ptKNGvErkLgf4QJMqa",
         "account_owner": null,
-        "amount": 6.33,
+        "amount": 12.33,
         "authorized_date": "Mon, 09 Oct 2023 00:00:00 GMT",
         "authorized_datetime": null,
         "category": [
@@ -131,7 +131,7 @@
       {
         "account_id": "GAGDjMVbxGUkXLN8AX4jINdeWvP7QyF69yL5E",
         "account_owner": null,
-        "amount": 500.0,
+        "amount": 120.0,
         "authorized_date": null,
         "authorized_datetime": null,
         "category": [
@@ -186,7 +186,7 @@
       {
         "account_id": "GAGDjMVbxGUkXLN8AX4jINdeWvP7QyF69yL5E",
         "account_owner": null,
-        "amount": 2078.5,
+        "amount": 1450,
         "authorized_date": null,
         "authorized_datetime": null,
         "category": [
@@ -241,7 +241,7 @@
       {
         "account_id": "GAGDjMVbxGUkXLN8AX4jINdeWvP7QyF69yL5E",
         "account_owner": null,
-        "amount": 500.0,
+        "amount": 17.8,
         "authorized_date": null,
         "authorized_datetime": null,
         "category": [
@@ -416,7 +416,7 @@
       {
         "account_id": "EbzDaQLRBzhZbDKL6b1ptKNGvErkLgf4QJMqa",
         "account_owner": null,
-        "amount": 5.4,
+        "amount": 15.4,
         "authorized_date": "Tue, 26 Sep 2023 00:00:00 GMT",
         "authorized_datetime": null,
         "category": [
@@ -480,7 +480,7 @@
       {
         "account_id": "neXnBr6mQXhBPlxQpPaVtawRWgEbZ7sAkwXBz",
         "account_owner": null,
-        "amount": 5850.0,
+        "amount": 1450.0,
         "authorized_date": null,
         "authorized_datetime": null,
         "category": [
@@ -1435,7 +1435,7 @@
       {
         "account_id": "neXnBr6mQXhBPlxQpPaVtawRWgEbZ7sAkwXBz",
         "account_owner": null,
-        "amount": 5850.0,
+        "amount": 1450.0,
         "authorized_date": null,
         "authorized_datetime": null,
         "category": [
@@ -2390,7 +2390,7 @@
       {
         "account_id": "neXnBr6mQXhBPlxQpPaVtawRWgEbZ7sAkwXBz",
         "account_owner": null,
-        "amount": 5850.0,
+        "amount": 1450.0,
         "authorized_date": null,
         "authorized_datetime": null,
         "category": [
@@ -3345,7 +3345,7 @@
       {
         "account_id": "neXnBr6mQXhBPlxQpPaVtawRWgEbZ7sAkwXBz",
         "account_owner": null,
-        "amount": 5850.0,
+        "amount": 1450.0,
         "authorized_date": null,
         "authorized_datetime": null,
         "category": [
@@ -4300,7 +4300,7 @@
       {
         "account_id": "neXnBr6mQXhBPlxQpPaVtawRWgEbZ7sAkwXBz",
         "account_owner": null,
-        "amount": 5850.0,
+        "amount": 1450.0,
         "authorized_date": null,
         "authorized_datetime": null,
         "category": [
@@ -5255,7 +5255,7 @@
       {
         "account_id": "neXnBr6mQXhBPlxQpPaVtawRWgEbZ7sAkwXBz",
         "account_owner": null,
-        "amount": 5850.0,
+        "amount": 1450.0,
         "authorized_date": null,
         "authorized_datetime": null,
         "category": [
@@ -6210,7 +6210,7 @@
       {
         "account_id": "neXnBr6mQXhBPlxQpPaVtawRWgEbZ7sAkwXBz",
         "account_owner": null,
-        "amount": 5850.0,
+        "amount": 1450.0,
         "authorized_date": null,
         "authorized_datetime": null,
         "category": [
@@ -7165,7 +7165,7 @@
       {
         "account_id": "neXnBr6mQXhBPlxQpPaVtawRWgEbZ7sAkwXBz",
         "account_owner": null,
-        "amount": 5850.0,
+        "amount": 1450.0,
         "authorized_date": null,
         "authorized_datetime": null,
         "category": [
@@ -8120,7 +8120,7 @@
       {
         "account_id": "neXnBr6mQXhBPlxQpPaVtawRWgEbZ7sAkwXBz",
         "account_owner": null,
-        "amount": 5850.0,
+        "amount": 1450.0,
         "authorized_date": null,
         "authorized_datetime": null,
         "category": [

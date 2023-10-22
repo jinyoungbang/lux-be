@@ -9,6 +9,7 @@ python-dotenv = "*"
 plaid-python = "*"
 flask-cors = "*"
 pymongo = "==3.11"
+dnspython = "*"
 
 [dev-packages]
 
