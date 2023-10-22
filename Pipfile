@@ -10,6 +10,7 @@ plaid-python = "*"
 flask-cors = "*"
 pymongo = "==3.11"
 dnspython = "*"
+gunicorn = "*"
 
 [dev-packages]
 
