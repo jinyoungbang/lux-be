@@ -203,15 +203,15 @@ def get_last_6_monthly_spending():
     # Initialize a list to store the aggregated spending for the last 6 months
     aggregated_data = []
 
-    # Calculate the start and end dates for the last 6 months
-    for i in range(6):
-        end_date = date
-        start_date = date - relativedelta(months=1)
-        date = start_date
+    date = date.replace(month=date.month+1)
 
-        # Convert the dates to datetime objects
-        start_date = datetime(start_date.year, start_date.month + 1, start_date.day)
-        end_date = datetime(end_date.year, end_date.month + 1, end_date.day)
+    for _ in range(6):
+        end_date = date.replace(day=1)
+        
+        if end_date.month == 1:
+            start_date = end_date.replace(year=end_date.year - 1, month=12)
+        else:
+            start_date = end_date.replace(month=end_date.month - 1)
 
         # Filter transactions that fall within the date range
         monthly_transactions = [
@@ -245,6 +245,8 @@ def get_last_6_monthly_spending():
                 "total_spending": round(total_spending, 2),
             }
         )
+        # Update the date to the previous month
+        date = start_date
 
     # Reverse the list to have the data in chronological order
     aggregated_data.reverse()
