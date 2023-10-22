@@ -308,3 +308,63 @@ def get_monthly_insight_report():
     )
 
     return jsonify(response)
+
+@prod_bp.route("/api/prod/insights/card", methods=["GET"])
+def get_card_recommendations():
+    date_str = request.args.get("date")
+    try:
+        date = datetime.strptime(date_str, "%Y-%m-%d")
+    except ValueError:
+        return jsonify(
+            {"error": "Invalid date format. Use the format: 'YYYY-MM-DD'"}, 400
+        )
+
+    # Fetch all transactions from MongoDB and convert date strings to datetime objects
+    all_transactions = mongo.get_all_transactions()
+
+    for transaction in all_transactions:
+        transaction["date"] = datetime.strptime(
+            transaction["date"], "%a, %d %b %Y %H:%M:%S %Z"
+        )
+
+    # Calculate the start and end dates for the given month
+    start_date = date.replace(day=1)
+    if start_date.month == 12:
+        end_date = start_date.replace(year=start_date.year + 1, month=1)
+    else:
+        end_date = start_date.replace(month=start_date.month + 1)
+
+    monthly_transactions = filter_transactions(all_transactions, start_date, end_date)
+
+    monthly_transactions_to_analyze = []
+
+    for transaction in monthly_transactions:
+        data_to_append = {}
+        data_to_append["amount"] = transaction["amount"]
+        data_to_append["category"] = transaction["personal_finance_category"]["primary"]
+        data_to_append["name"] = transaction["name"]
+        monthly_transactions_to_analyze.append(data_to_append)
+
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are an assistant providing personal financial advice. You want to give the best tips for a person to help improve their money management and build their net worth over time. I want it to be brief and give the user good financial advice as well. Try keep it concise. Ideally, bullet point styles, to the point but informative.",
+            },
+            {
+                "role": "user",
+                "content": "Give me things I'm doing well and three things im not in terms of financial advice: "
+                + str(monthly_transactions_to_analyze),
+            },
+        ],
+        temperature=1,
+        max_tokens=256,
+        top_p=1,
+        frequency_penalty=0.05,
+        presence_penalty=0,
+    )
+
+    return jsonify(response)
