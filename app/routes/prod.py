@@ -226,15 +226,18 @@ def get_last_6_monthly_spending():
                 )
             )
         ]
-        
+
         total_spending = 0
 
         for transaction in monthly_transactions:
-            if "modified_amount" in transaction and transaction["amount"] != transaction["modified_amount"]:
+            if (
+                "modified_amount" in transaction
+                and transaction["amount"] != transaction["modified_amount"]
+            ):
                 total_spending += transaction["modified_amount"]
             else:
                 total_spending += transaction["amount"]
-                
+
         aggregated_data.append(
             {
                 "start_date": start_date.strftime("%Y-%m-%d"),
@@ -309,6 +312,7 @@ def get_monthly_insight_report():
 
     return jsonify(response)
 
+
 @prod_bp.route("/api/prod/insights/card", methods=["GET"])
 def get_card_recommendations():
     date_str = request.args.get("date")
@@ -347,24 +351,55 @@ def get_card_recommendations():
 
     openai.api_key = os.getenv("OPENAI_API_KEY")
 
+    test = "Based on your spending, here are the recommended credit and/or debit cards:\n\n1. Capital One Savor Cash Rewards Credit Card: This card offers unlimited 4% cash back on dining and entertainment, making it a great option for your food and drink expenses. You can also earn 2% cash back at grocery stores and 1% cash back on all other purchases.\n\n2. Uber Visa Card: Since you frequently use Uber for transportation, this card provides 5% back in Uber Cash for Uber rides, Uber Eats, and JUMP bikes and scooters. You also earn 3% cash back on restaurants, bars, and delivery services.\n\nThese cards will help you maximize rewards and discounts on your most frequent spending categories. Make sure to review the terms and conditions of each card to determine which one aligns best with your needs."
+
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
             {
                 "role": "system",
-                "content": "You are an assistant providing personal financial advice. You want to give the best tips for a person to help improve their money management and build their net worth over time. I want it to be brief and give the user good financial advice as well. Try keep it concise. Ideally, bullet point styles, to the point but informative.",
+                "content": "You are an assistant providing personal financial advice. You are trying to help a user making better financial decisions. In this case, you are trying to recommend 2 to 4 credit and/or debit cards based on the person's spendings either to maximize points or rewards or get the most discounts possible. Additionally, the results should be given by name: and the reason:. Do not number the list of cards.",
             },
             {
                 "role": "user",
-                "content": "Give me things I'm doing well and three things im not in terms of financial advice: "
+                "content": 'Recommend me best credit and/or debit cards based on my spending:\n\n[\n  {\n    "amount": 152.66,\n    "category": "FOOD_AND_DRINK",\n    "name": "South End Buttery, Toast.inc"\n  },\n  {\n    "amount": 25.21,\n    "category": "TRANSPORTATION",\n    "name": "Uber 072515 SF**POOL**"\n  },\n  {\n    "amount": 74.26,\n    "category": "GENERAL_MERCHANDISE",\n    "name": "TARGET"\n  },\n  {\n    "amount": 13.72,\n    "category": "GENERAL_MERCHANDISE",\n    "name": "Amazon.com"\n  },\n  {\n    "amount": 25.0,\n    "category": "TRAVEL",\n    "name": "MBTA"\n  },\n  {\n    "amount": 12.33,\n    "category": "TRANSPORTATION",\n    "name": "Uber 072515 SF**POOL**"\n  },\n  {\n    "amount": 4.12,\n    "category": "FOOD_AND_DRINK",\n    "name": "Tatte"\n  },\n  {\n    "amount": 4.55,\n    "category": "FOOD_AND_DRINK",\n    "name": "Starbucks"\n  },\n  {\n    "amount": 17.8,\n    "category": "FOOD_AND_DRINK",\n    "name": "KFC"\n  },\n  {\n    "amount": 12.5,\n    "category": "FOOD_AND_DRINK",\n    "name": "Santouka Back Bay"\n  }\n]',
+            },
+            {
+                "role": "assistant",
+                "content": "Based on your spendings, here are the recommended credit and/or debit cards:\n\n\nChase Freedom Unlimited: You can earn unlimited 1.5% cash back on all purchases, including your spendings on food and drink, transportation, general merchandise, and more.\n\nCapital One VentureOne Rewards: This card offers 1.25 miles per dollar on every purchase, making it a great option for your spending on transportation and travel.\n\nAmazon Prime Rewards Visa Signature Card: Since you frequently shop on Amazon.com, this card gives you 5% back on all your Amazon purchases, helping you save money.\n\nTarget REDcard: If you shop frequently at Target, this card offers you a 5% discount on all Target purchases. It can help you save money on your general merchandise spending.\n\nConsider applying for these cards based on your specific needs to maximize rewards and discounts.",
+            },
+            {
+                "role": "user",
+                "content": "Recommend me best credit and/or debit cards based on my spending:\n "
                 + str(monthly_transactions_to_analyze),
             },
         ],
         temperature=1,
         max_tokens=256,
         top_p=1,
-        frequency_penalty=0.05,
+        frequency_penalty=0,
         presence_penalty=0,
     )
 
-    return jsonify(response)
+    test = test.split("\n\n")
+
+    return jsonify(response["choices"][0]["message"]["content"])
+
+
+@prod_bp.route("/api/prod/fetch/card", methods=["GET"])
+def fetch_card_rec():
+    content = [
+        {"title": "Uber Visa Card",
+        "reason": "This card is ideal for your transportation expenses, including Uber rides. It offers cash back on Uber rides, as well as on other spending categories, such as restaurants."},
+
+        {"title": "Capital One Walmart Rewards Card",
+        "reason": "If you frequently shop at Walmart, this card can provide you with rewards and discounts on your general merchandise purchases. It offers cash back on Walmart purchases as well as on other eligible spending."},
+
+        {"title": "Amazon Prime Rewards Visa Signature Card",
+        "reason": "Since you have made purchases on Amazon.com, this card can earn you rewards and discounts on Amazon purchases. It offers cash back on Amazon purchases, as well as on other spending categories."},
+
+        {"title": "American Express Gold Card",
+        "reason": "If you spend a significant amount on food and drink, this card can be beneficial. It offers rewards and benefits at restaurants worldwide, including fast-food establishments."}
+    ]
+
+    return jsonify(content)
